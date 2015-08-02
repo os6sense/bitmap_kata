@@ -1,6 +1,11 @@
 class Colour
+  DEFAULT = '0'
   attr_accessor :value
-  def initialize(val)
-    @value = val
+  def initialize(value = DEFAULT)
+    @value = value
+  end
+
+  def reset
+    @value = DEFAULT
   end
 end
