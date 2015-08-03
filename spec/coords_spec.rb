@@ -2,8 +2,8 @@ require_relative '../lib/coord.rb'
 
 describe Coord do
   subject { described_class.new(x, y) }
-  let(:y) { 10 }
-  let(:x) { 10 }
+  let(:y) { 1 }
+  let(:x) { 1 }
 
   describe '#initialize' do
     context 'when x is within the default bounds' do
@@ -20,31 +20,37 @@ describe Coord do
       end
     end
 
+    context 'when both are in valid bounds' do
+      it 'sets valid? to true' do
+        expect(subject.valid?).to eq true
+      end
+    end
+
     context 'when x is below the default bound' do
-      let(:x) { -100 }
-      it 'raises an ArgumentError' do
-        expect { subject }.to raise_error ArgumentError
+      let(:x) { 0 }
+      it 'sets valid? to false' do
+        expect(subject.valid?).to eq false
       end
     end
 
     context 'when x is above the default bound' do
-      let(:x) { 1000  }
-      it 'raises an ArgumentError' do
-        expect { subject }.to raise_error ArgumentError
+      let(:x) { 251  }
+      it 'sets valid? to false' do
+        expect(subject.valid?).to eq false
       end
     end
 
     context 'when y is below the default bound' do
-      let(:y) { -100 }
-      it 'raises an ArgumentError' do
-        expect { subject }.to raise_error ArgumentError
+      let(:y) { 0 }
+      it 'sets valid? to false' do
+        expect(subject.valid?).to eq false
       end
     end
 
     context 'when y is above the default bound' do
-      let(:y) { 1000  }
-      it 'raises an ArgumentError' do
-        expect { subject }.to raise_error ArgumentError
+      let(:y) { 251  }
+      it 'sets valid? to false' do
+        expect(subject.valid?).to eq false
       end
     end
   end

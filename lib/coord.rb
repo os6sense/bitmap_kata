@@ -7,31 +7,40 @@ class Coord
   attr_reader :x,
               :y
 
-  attr_reader :min,
-              :max
+  attr_reader :xmin,
+              :xmax
 
-  def initialize(x, y, min: 0, max: 250)
-    @min, @max = min, max
+  attr_reader :ymin,
+              :ymax
+
+  def initialize(x, y, xmin: 1, xmax: 250, ymin: 1, ymax: 250)
+    @xmin, @xmax = xmin, xmax
+    @ymin, @ymax = ymin, ymax
 
     self.x = x
     self.y = y
   end
 
   def x=(val)
-    @x = test_bounds(val)
+    @x = val
   end
 
   def y=(val)
-    @y = test_bounds(val)
+    @y = val
+  end
+
+  def valid?
+    test_bounds(x, @xmin, @xmax) && test_bounds(y, @ymin, @ymax)
   end
 
   private
 
   # check if val is valid
-  def test_bounds(val)
-    return val if val >= @min && val <= @max
-
-    fail ArgumentError,
-         "Value #{val} is outside coordinate bounds (#{@min} - #{@max})."
+  def test_bounds(val, min, max)
+    if val >= min && val <= max
+      true
+    else
+      false
+    end
   end
 end
