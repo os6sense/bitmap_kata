@@ -1,4 +1,5 @@
 require_relative 'colour.rb'
+require_relative 'coord.rb'
 require_relative 'bitmap_presenter.rb'
 
 # It is assumed from the spec that the m * n array is specifying row major
@@ -32,25 +33,28 @@ class Bitmap
     @bitmap.each { |row| row.each(&:reset) }
   end
 
-  # Access an element of the bitmap using a +Coordinate+
-  def at(coords)
-    self[coords.x, coords.y]
-  end
-
-  # Set an element of the bitmap to +value+ using a +Coordinate+
-  def set_at(coords, value)
-    self[coords.x, coords.y] = value
-  end
-
   # "Raw" row and column based reader for values
   def [](row, col)
-    @bitmap[row][col]
+    at(Coord.new(row, col, xmax: height, ymax: width))
   end
 
   # "Raw" row and column based writer for values
   def []=(row, col, value)
-    @bitmap[row][col] = value
+    Coord.new(row, col, xmax: height, ymax: width).tap do |coord|
+      set_at(coord, value)
+    end
   end
+
+  # Access an element of the bitmap using a +Coordinate+
+  def at(coords)
+    @bitmap[coords.x][coords.y]
+  end
+
+  # Set an element of the bitmap to +value+ using a +Coordinate+
+  def set_at(coords, value)
+    @bitmap[coords.x][coords.y] = value
+  end
+
 
   # Draw a line between two coordinate pairs using the supplied +colour+
   #
@@ -83,6 +87,8 @@ class Bitmap
   #Pixel (X,Y) belongs to R. Any other pixel which is the same colour as (X,Y)
   #and shares a common side with any pixel in R also belongs to this region.
   def fill(coords, colour)
+
+
   end
 
   # Rotate the bitmap 90 degrees clockwisej
