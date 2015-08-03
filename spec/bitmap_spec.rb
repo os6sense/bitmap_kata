@@ -119,7 +119,27 @@ describe Bitmap do
   end
 
   describe '#fill' do
+    subject { described_class.new(height, width, default_colour) }
 
+    let(:coord1) { double('Coord', x: 1, y: 1, valid?: true) }
+    let(:a_colour) { double('Colour', value: 'A') }
+    let(:b_colour) { double('Colour', value: 'B') }
+
+    it 'fills a bounded region' do
+      subject[0, 1] = a_colour
+      subject[1, 1] = a_colour
+      subject[1, 0] = a_colour
+
+      subject.fill(coord1, new_colour)
+      expect { subject.show }
+        .to output("1A00\nAA00\n0000\n0000\n").to_stdout
+    end
+
+    it 'fills an entire square region' do
+      subject.fill(coord1, new_colour)
+      expect { subject.show }
+        .to output("1111\n" * 4).to_stdout
+    end
   end
 
   describe '#show' do
@@ -151,18 +171,16 @@ describe Bitmap do
     subject { described_class.new(height, width, default_colour) }
 
     before do
-      subject[0, 0] = double("Colour", value: '1')
-      subject[0, 3] = double("Colour", value: '2')
-      subject[3, 0] = double("Colour", value: '3')
-      subject[3, 3] = double("Colour", value: '4')
+      subject[0, 0] = double('Colour', value: '1')
+      subject[0, 3] = double('Colour', value: '2')
+      subject[3, 0] = double('Colour', value: '3')
+      subject[3, 3] = double('Colour', value: '4')
     end
 
     it 'rotates the array by 90 degrees clockwise' do
       subject.rotate
-      expect{ subject.show }
+      expect { subject.show }
         .to output("3001\n0000\n0000\n4002\n").to_stdout
     end
   end
-
-
 end

@@ -35,26 +35,25 @@ class Bitmap
 
   # "Raw" row and column based reader for values
   def [](row, col)
-    at(Coord.new(row, col, xmax: height, ymax: width))
+    at(new_coord(row + 1, col + 1))
   end
 
   # "Raw" row and column based writer for values
   def []=(row, col, value)
-    Coord.new(row, col, xmax: height, ymax: width).tap do |coord|
+    new_coord(row + 1, col + 1).tap do | coord |
       set_at(coord, value)
     end
   end
 
   # Access an element of the bitmap using a +Coordinate+
   def at(coords)
-    @bitmap[coords.x][coords.y]
+    @bitmap[coords.x - 1][coords.y - 1]
   end
 
   # Set an element of the bitmap to +value+ using a +Coordinate+
   def set_at(coords, value)
-    @bitmap[coords.x][coords.y] = value
+    @bitmap[coords.x - 1][coords.y - 1] = value
   end
-
 
   # Draw a line between two coordinate pairs using the supplied +colour+
   #
@@ -63,32 +62,37 @@ class Bitmap
   # +coord2+:: finishing coordinate
   # +colour+:: Colour to fill the line colour with
   def drawline(coord1, coord2, colour)
-    x_start, x_end = coord1.x, coord2.x
-    y_start, y_end = coord1.y, coord2.y
-
-    x_increment = x_end - x_start <=> 0
-    y_increment = y_end - y_start <=> 0
+    x_increment = (coord2.x - coord1.x) <=> 0
+    y_increment = (coord2.y - coord1.y) <=> 0
 
     return if x_increment == 0 && y_increment == 0
 
-    x, y = x_start, y_start
+    x, y = coord1.x, coord1.y
 
-    while (x_increment > 0 ? x <= x_end : x >= x_end) &&
-          (y_increment > 0 ? y <= y_end : y >= y_end)
+    while (x_increment > 0 ? x <= coord2.x : x >= coord2.x) &&
+          (y_increment > 0 ? y <= coord2.y : y >= coord2.y)
 
-      @bitmap[x][y] = colour
+      self[x, y] = colour
 
       x += x_increment
       y += y_increment
     end
   end
 
-  #* F X Y C - Fill the region R with the colour C. R is defined as:
-  #Pixel (X,Y) belongs to R. Any other pixel which is the same colour as (X,Y)
-  #and shares a common side with any pixel in R also belongs to this region.
-  def fill(coords, colour)
+  # Fill the region R with the colour C. R is defined as:
+  # Pixel (X,Y) belongs to R. Any other pixel which is the same colour as (X,Y)
+  # and shares a common side with any pixel in R also belongs to this region.
+  def fill(coords, new_colour, original_colour = nil)
+    return unless coords.valid?
 
+    original_colour ||= at(coords)
+    return if at(coords) != original_colour || at(coords) == new_colour
 
+    set_at(coords, new_colour)
+
+    [[1, 0], [-1, 0], [0, 1], [0, -1]].each do |x1, y1|
+      fill(new_coord(coords.x + x1, coords.y + y1), new_colour, original_colour)
+    end
   end
 
   # Rotate the bitmap 90 degrees clockwisej
@@ -103,5 +107,11 @@ class Bitmap
   # +presenter:+:: named parameter. default ( BitmapPresenter instance )
   def show(out: $stdout, presenter: BitmapPresenter.new)
     presenter.show(@bitmap, out: out)
+  end
+
+  private
+
+  def new_coord(x, y)
+    Coord.new(x, y, xmax: height, ymax: width)
   end
 end
