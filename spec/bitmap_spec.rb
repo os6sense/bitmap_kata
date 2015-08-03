@@ -31,6 +31,7 @@ describe Bitmap do
   end
 
   describe '#[]' do
+    let(:coords) { double('Coords', x: 0, y: 0) }
     subject { described_class.new(height, width, default_colour) }
     it 'returns an element' do
       expect(subject[0, 0]).to eq default_colour
@@ -58,33 +59,74 @@ describe Bitmap do
     before { subject.drawline(coord1, coord2, new_colour) }
 
     context 'when provided coordinates between two columns' do
-      let(:coord1) { double('Coord', x: 1, y: 0) }
-      let(:coord2) { double('Coord', x: 1, y: 3) }
+      context 'when the y coordinate is assending' do
+        let(:coord1) { double('Coord', x: 1, y: 0) }
+        let(:coord2) { double('Coord', x: 1, y: 3) }
 
-      it 'draws a horizontal segment of colour between the coords' do
-        (coord1.y).upto(coord2.y).each do |y|
-          expect(subject[1, y]).to eq new_colour
+        it 'draws a horizontal segment between the coords' do
+          (coord1.y).upto(coord2.y).each do |y|
+            expect(subject[1, y]).to eq new_colour
+          end
+        end
+      end
+
+      context 'when the y coordinate is descending' do
+        let(:coord1) { double('Coord', x: 1, y: 3) }
+        let(:coord2) { double('Coord', x: 1, y: 0) }
+
+        it 'draws a horizontal segment between the coords' do
+          (coord1.y).upto(coord2.y).each do |y|
+            expect(subject[1, y]).to eq new_colour
+          end
         end
       end
     end
 
     context 'when provided coordinates between two rows' do
-      let(:coord1) { double('Coord', x: 0, y: 2) }
-      let(:coord2) { double('Coord', x: 3, y: 2) }
+      context 'then the x coordinate is ascending' do
+        let(:coord1) { double('Coord', x: 0, y: 2) }
+        let(:coord2) { double('Coord', x: 3, y: 2) }
 
-      it 'draws a horizontal segment of colour between the coords' do
-        (coord1.x).upto(coord2.x).each do |x|
-          expect(subject[x, 2]).to eq new_colour
+        it 'draws a horizontal segment between the coords' do
+          (coord1.x).upto(coord2.x).each do |x|
+            expect(subject[x, 2]).to eq new_colour
+          end
+        end
+      end
+
+      context 'then the x coordinate is decending' do
+        let(:coord1) { double('Coord', x: 3, y: 2) }
+        let(:coord2) { double('Coord', x: 0, y: 2) }
+
+        it 'draws a horizontal segment between the coords' do
+          (coord1.x).upto(coord2.x).each do |x|
+            expect(subject[x, 2]).to eq new_colour
+          end
         end
       end
     end
+
+    context 'when provided diagonal coordinates between two points' do
+      let(:coord1) { double('Coord', x: 0, y: 0) }
+      let(:coord2) { double('Coord', x: 3, y: 3) }
+
+      it 'draws a horizontal segment between the coords' do
+        (coord1.x).upto(coord2.x).each do |x|
+          expect(subject[x, x]).to eq new_colour
+        end
+      end
+    end
+  end
+
+  describe '#fill' do
+
   end
 
   describe '#show' do
     subject { described_class.new(height, width, default_colour) }
 
     it 'prints out the bitmap' do
-      expect{ subject.show }.to output("0000\n" * 4).to_stdout
+      expect { subject.show }.to output("0000\n" * 4).to_stdout
     end
 
     context 'when provided the optional named paramter #out' do
@@ -104,4 +146,23 @@ describe Bitmap do
       end
     end
   end
+
+  describe '#rotate' do
+    subject { described_class.new(height, width, default_colour) }
+
+    before do
+      subject[0, 0] = double("Colour", value: '1')
+      subject[0, 3] = double("Colour", value: '2')
+      subject[3, 0] = double("Colour", value: '3')
+      subject[3, 3] = double("Colour", value: '4')
+    end
+
+    it 'rotates the array by 90 degrees clockwise' do
+      subject.rotate
+      expect{ subject.show }
+        .to output("3001\n0000\n0000\n4002\n").to_stdout
+    end
+  end
+
+
 end
