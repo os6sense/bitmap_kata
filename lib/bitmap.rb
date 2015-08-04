@@ -2,8 +2,13 @@ require_relative 'colour.rb'
 require_relative 'coord.rb'
 require_relative 'bitmap_presenter.rb'
 
-# It is assumed from the spec that the m * n array is specifying row major
-# order hence height * width
+# A simple bitmap class using row major ordering for coordinate pairs. For
+# the most part it is neccessary to supply a Coord instance in order to
+# reference a coordinate on which an operation should be performed. The
+# exception to this are the +[]+ and +[]=+ methods which are accessed via
+# x, y values. It should be noted that x, y coordinates will be converted
+# into a Coord internally hence access which violates the bounds of the
+# internal dimensions will be checked by calls to coord.valid?
 class Bitmap
   attr_reader :height,
               :width
@@ -22,7 +27,6 @@ class Bitmap
     end
   end
 
-  #def initialize(height, width, default_colour = Colour.new('0'))
   def initialize(dimensions, default_colour = Colour.new('0'))
     @height, @width = dimensions.x, dimensions.y
 
@@ -34,26 +38,28 @@ class Bitmap
     @bitmap.each { |row| row.each(&:reset) }
   end
 
-  # "Raw" row and column based reader for values
+  # row and column based reader for values e.g. [x, y]
   def [](row, col)
     at(new_coord(row + 1, col + 1))
   end
 
-  # "Raw" row and column based writer for values
+  # row and column based writer for values e.g. [x, y] = Colour.new('X')
   def []=(row, col, value)
     new_coord(row + 1, col + 1).tap do |coord|
       plot(coord, value)
     end
   end
 
-  # Access an element of the bitmap using a +Coordinate+
-  def at(coords)
-    @bitmap[coords.x - 1][coords.y - 1]
+  # Access an element of the bitmap using a +Coord+
+  def at(coord)
+    fail "Invalid Coordinate Coord:#{coord}" unless coord.valid?
+    @bitmap[coord.x - 1][coord.y - 1]
   end
 
-  # Set an element of the bitmap to +value+ using a +Coordinate+
-  def plot(coords, value)
-    @bitmap[coords.x - 1][coords.y - 1] = value
+  # Set an element of the bitmap to +value+ at +Coord+
+  def plot(coord, value)
+    fail "Invalid Coordinate Coord:#{coord}" unless coord.valid?
+    @bitmap[coord.x - 1][coord.y - 1] = value
   end
 
   # Draw a line between two coordinate pairs using the supplied +colour+
@@ -63,6 +69,9 @@ class Bitmap
   # +coord2+:: finishing coordinate
   # +colour+:: Colour to fill the line colour with
   def drawline(coord1, coord2, colour)
+    fail "Invalid Coordinate Coord 1:#{coord}" unless coord1.valid?
+    fail "Invalid Coordinate Coord 2:#{coord2}" unless coord2.valid?
+
     x_increment = (coord2.x - coord1.x) <=> 0
     y_increment = (coord2.y - coord1.y) <=> 0
 
@@ -80,19 +89,28 @@ class Bitmap
     end
   end
 
-  # Fill the region R with the colour C. R is defined as:
-  # Pixel (X,Y) belongs to R. Any other pixel which is the same colour as (X,Y)
-  # and shares a common side with any pixel in R also belongs to this region.
-  def fill(coords, new_colour, original_colour = nil)
-    return unless coords.valid?
+  # Fill a region R with a new colour. R is defined as:
+  #
+  # coord belongs to R. Any other pixel which is the same colour as coord
+  # and shares a common side with any pixel in R, also belongs to this region.
+  #
+  # Note that this method works recursively and the param original_colour
+  # is used by recursive calls.
+  #
+  # PARAMS
+  # +coord+:: x,y coordinates of the region to fill
+  # +new_colour+:: The colour to fill with
+  def fill(coord, new_colour, original_colour = nil)
+    fail "Invalid Coordinate :#{coord}" if !coord.valid? && original_colour.nil?
+    return unless coord.valid?
 
-    original_colour ||= at(coords)
-    return if at(coords) != original_colour || at(coords) == new_colour
+    original_colour ||= at(coord)
+    return if at(coord) != original_colour || at(coord) == new_colour
 
-    plot(coords, new_colour)
+    plot(coord, new_colour)
 
     [[1, 0], [-1, 0], [0, 1], [0, -1]].each do |x1, y1|
-      fill(new_coord(coords.x + x1, coords.y + y1), new_colour, original_colour)
+      fill(new_coord(coord.x + x1, coord.y + y1), new_colour, original_colour)
     end
   end
 

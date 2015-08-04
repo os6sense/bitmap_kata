@@ -64,8 +64,8 @@ describe Bitmap do
 
     context 'when provided coordinates between two columns' do
       context 'when the y coordinate is assending' do
-        let(:coord1) { double('Coord', x: 2, y: 1) }
-        let(:coord2) { double('Coord', x: 2, y: 4) }
+        let(:coord1) { double('Coord', x: 2, y: 1, valid?: true) }
+        let(:coord2) { double('Coord', x: 2, y: 4, valid?: true) }
 
         it 'draws a horizontal segment between the coords' do
           (coord1.y).upto(coord2.y).each do |y|
@@ -75,8 +75,8 @@ describe Bitmap do
       end
 
       context 'when the y coordinate is descending' do
-        let(:coord1) { double('Coord', x: 2, y: 4) }
-        let(:coord2) { double('Coord', x: 2, y: 1) }
+        let(:coord1) { double('Coord', x: 2, y: 4, valid?: true) }
+        let(:coord2) { double('Coord', x: 2, y: 1, valid?: true) }
 
         it 'draws a horizontal segment between the coords' do
           (coord1.y).upto(coord2.y).each do |y|
@@ -88,8 +88,8 @@ describe Bitmap do
 
     context 'when provided coordinates between two rows' do
       context 'then the x coordinate is ascending' do
-        let(:coord1) { double('Coord', x: 1, y: 2) }
-        let(:coord2) { double('Coord', x: 4, y: 2) }
+        let(:coord1) { double('Coord', x: 1, y: 2, valid?: true) }
+        let(:coord2) { double('Coord', x: 4, y: 2, valid?: true) }
 
         it 'draws a horizontal segment between the coords' do
           (coord1.x).upto(coord2.x).each do |x|
@@ -99,8 +99,8 @@ describe Bitmap do
       end
 
       context 'then the x coordinate is decending' do
-        let(:coord1) { double('Coord', x: 4, y: 2) }
-        let(:coord2) { double('Coord', x: 1, y: 2) }
+        let(:coord1) { double('Coord', x: 4, y: 2, valid?: true) }
+        let(:coord2) { double('Coord', x: 1, y: 2, valid?: true) }
 
         it 'draws a horizontal segment between the coords' do
           (coord1.x).upto(coord2.x).each do |x|
@@ -112,8 +112,8 @@ describe Bitmap do
 
     context 'when provided diagonal coordinates between two points' do
       context 'when drawn to the decensing corner' do
-        let(:coord1) { double('Coord', x: 1, y: 1) }
-        let(:coord2) { double('Coord', x: 4, y: 4) }
+        let(:coord1) { double('Coord', x: 1, y: 1, valid?: true) }
+        let(:coord2) { double('Coord', x: 4, y: 4, valid?: true) }
 
         it 'draws a horizontal segment between the coords' do
           (coord1.x).upto(coord2.x).each do |x|
