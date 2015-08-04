@@ -32,7 +32,6 @@ describe Bitmap do
   end
 
   describe '#[]' do
-    let(:coords) { double('Coords', x: 0, y: 0) }
     subject { described_class.new(dimensions, default_colour) }
     it 'returns an element' do
       expect(subject[0, 0]).to eq default_colour
@@ -46,6 +45,10 @@ describe Bitmap do
       expect(subject[0, 0]).to eq new_colour
     end
   end
+
+  #describe '#at' do
+    #it { pending }
+  #end
 
   describe '#clear' do
     subject { described_class.new(dimensions, new_colour) }
@@ -61,23 +64,23 @@ describe Bitmap do
 
     context 'when provided coordinates between two columns' do
       context 'when the y coordinate is assending' do
-        let(:coord1) { double('Coord', x: 1, y: 0) }
-        let(:coord2) { double('Coord', x: 1, y: 3) }
+        let(:coord1) { double('Coord', x: 2, y: 1) }
+        let(:coord2) { double('Coord', x: 2, y: 4) }
 
         it 'draws a horizontal segment between the coords' do
           (coord1.y).upto(coord2.y).each do |y|
-            expect(subject[1, y]).to eq new_colour
+            expect(subject[1, y - 1]).to eq new_colour
           end
         end
       end
 
       context 'when the y coordinate is descending' do
-        let(:coord1) { double('Coord', x: 1, y: 3) }
-        let(:coord2) { double('Coord', x: 1, y: 0) }
+        let(:coord1) { double('Coord', x: 2, y: 4) }
+        let(:coord2) { double('Coord', x: 2, y: 1) }
 
         it 'draws a horizontal segment between the coords' do
           (coord1.y).upto(coord2.y).each do |y|
-            expect(subject[1, y]).to eq new_colour
+            expect(subject[1, y - 1]).to eq new_colour
           end
         end
       end
@@ -85,35 +88,37 @@ describe Bitmap do
 
     context 'when provided coordinates between two rows' do
       context 'then the x coordinate is ascending' do
-        let(:coord1) { double('Coord', x: 0, y: 2) }
-        let(:coord2) { double('Coord', x: 3, y: 2) }
+        let(:coord1) { double('Coord', x: 1, y: 2) }
+        let(:coord2) { double('Coord', x: 4, y: 2) }
 
         it 'draws a horizontal segment between the coords' do
           (coord1.x).upto(coord2.x).each do |x|
-            expect(subject[x, 2]).to eq new_colour
+            expect(subject[x - 1, 1]).to eq new_colour
           end
         end
       end
 
       context 'then the x coordinate is decending' do
-        let(:coord1) { double('Coord', x: 3, y: 2) }
-        let(:coord2) { double('Coord', x: 0, y: 2) }
+        let(:coord1) { double('Coord', x: 4, y: 2) }
+        let(:coord2) { double('Coord', x: 1, y: 2) }
 
         it 'draws a horizontal segment between the coords' do
           (coord1.x).upto(coord2.x).each do |x|
-            expect(subject[x, 2]).to eq new_colour
+            expect(subject[x - 1, 1]).to eq new_colour
           end
         end
       end
     end
 
     context 'when provided diagonal coordinates between two points' do
-      let(:coord1) { double('Coord', x: 0, y: 0) }
-      let(:coord2) { double('Coord', x: 3, y: 3) }
+      context 'when drawn to the decensing corner' do
+        let(:coord1) { double('Coord', x: 1, y: 1) }
+        let(:coord2) { double('Coord', x: 4, y: 4) }
 
-      it 'draws a horizontal segment between the coords' do
-        (coord1.x).upto(coord2.x).each do |x|
-          expect(subject[x, x]).to eq new_colour
+        it 'draws a horizontal segment between the coords' do
+          (coord1.x).upto(coord2.x).each do |x|
+            expect(subject[x - 1, x - 1]).to eq new_colour
+          end
         end
       end
     end
