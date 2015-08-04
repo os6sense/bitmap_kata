@@ -73,7 +73,7 @@ class Bitmap
     while (x_increment > 0 ? x <= coord2.x : x >= coord2.x) &&
           (y_increment > 0 ? y <= coord2.y : y >= coord2.y)
 
-      self[x, y] = colour
+      plot(new_coord(x, y), colour)
 
       x += x_increment
       y += y_increment
