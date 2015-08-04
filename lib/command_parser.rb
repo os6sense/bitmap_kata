@@ -56,6 +56,7 @@ class Command
     fail "Unknown Command #{letter}" unless valid_command?(letter)
 
     @command = get_command(letter)
+
     @coords = get_coord(args) if %w(I L F).include?(letter)
     @colour = get_colour(args) if %(L V H F).include?(letter)
 
@@ -65,33 +66,32 @@ class Command
   def get_line_coords(args)
     case args[0]
     when 'V'
-      [new_coord(args[1], args[1]), new_coord(args[2], args[3])]
+      [new_coord(args[2], args[1]), new_coord(args[3], args[1])]
     when 'H'
-      [new_coord(args[1], args[2]), new_coord(args[3], args[3])]
+      [new_coord(args[3], args[1]), new_coord(args[3], args[2])]
     end
   end
 
   def apply(bitmap)
-    bitmap.send(@command, *params )
+    bitmap.send(@command, *params)
   end
 
   private
 
   def params
     [@coords, @coords2, @colour].compact
-
   end
 
   def new_coord(x, y)
     Coord.new(x.to_i, y.to_i)
   end
 
-  def valid_command?(letter)
-    COMMANDS.key?(letter.to_sym)
+  def get_coord(args)
+    Coord.new(args[2].to_i, args[1].to_i)
   end
 
-  def get_coord(args)
-    Coord.new(args[1].to_i, args[2].to_i)
+  def valid_command?(letter)
+    COMMANDS.key?(letter.to_sym)
   end
 
   def get_command(letter)
@@ -101,5 +101,4 @@ class Command
   def get_colour(args)
     Colour.new(args[-1])
   end
-
 end
