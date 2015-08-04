@@ -1,13 +1,13 @@
 require_relative './feature_helper.rb'
 
 feature 'user plots a pixel' do
-  let(:plot) { 'L 3 3 A'}
+  let(:plot) { 'L 3 3 A' }
 
   before do
     @bitmap = create_5_x_5
   end
 
-  scenario 'with a valid height and width' do
+  scenario 'with a bitmap of the default colour' do
     CommandParser.parse(plot).apply(@bitmap)
 
     expect { @bitmap.show }
