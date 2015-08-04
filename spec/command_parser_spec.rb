@@ -3,15 +3,31 @@ require_relative '../lib/command_parser.rb'
 describe CommandParser do
   subject { described_class.parse(command) }
 
-  context 'when command is I 5 6' do
-    let(:command) { 'I 5 6' }
-    it 'set command to create' do
-      expect(subject.command).to eq :new
+  context 'when command is I' do
+    context 'when parameters are 5 6' do
+      let(:command) { 'I 5 6' }
+      it 'set command to create' do
+        expect(subject.command).to eq :new
+      end
+
+      it 'sets coords to 5 6' do
+        expect(subject.coords.x).to eq 6
+        expect(subject.coords.y).to eq 5
+      end
     end
 
-    it 'sets coords to 5 6' do
-      expect(subject.coords.x).to eq 6
-      expect(subject.coords.y).to eq 5
+    context 'when less than 2 parameters are provided' do
+      let(:command) { 'I 5' }
+      it 'fails' do
+        expect { subject }.to raise_error(/Incorrect/)
+      end
+    end
+
+    context 'when more than 2 parameters are provided' do
+      let(:command) { 'I 5 6 C' }
+      it 'fails' do
+        expect { subject }.to raise_error(/Incorrect/)
+      end
     end
   end
 
@@ -19,6 +35,13 @@ describe CommandParser do
     let(:command) { 'C' }
     it 'set command to clear' do
       expect(subject.command).to eq :clear
+    end
+
+    context 'when more than 0 parameters are provided' do
+      let(:command) { 'C 5 6 C' }
+      it 'fails' do
+        expect { subject }.to raise_error(/Incorrect/)
+      end
     end
   end
 
@@ -34,6 +57,20 @@ describe CommandParser do
     end
     it 'sets colour to A' do
       expect(subject.colour.value).to eq 'A'
+    end
+
+    context 'when less than 3 parameters are provided' do
+      let(:command) { 'L 2' }
+      it 'fails' do
+        expect { subject }.to raise_error(/Incorrect/)
+      end
+    end
+
+    context 'when more than 3 parameters are provided' do
+      let(:command) { 'L 5 6 A X' }
+      it 'fails' do
+        expect { subject }.to raise_error(/Incorrect/)
+      end
     end
   end
 
@@ -88,6 +125,20 @@ describe CommandParser do
     it 'sets colour to A' do
       expect(subject.colour.value).to eq 'A'
     end
+
+    context 'when less than 3 parameters are provided' do
+      let(:command) { 'F 2' }
+      it 'fails' do
+        expect { subject }.to raise_error(/Incorrect/)
+      end
+    end
+
+    context 'when more than 3 parameters are provided' do
+      let(:command) { 'F 5 6 A X' }
+      it 'fails' do
+        expect { subject }.to raise_error(/Incorrect/)
+      end
+    end
   end
 
   context 'when command is S' do
@@ -95,6 +146,13 @@ describe CommandParser do
 
     it 'set command to show' do
       expect(subject.command).to eq :show
+    end
+
+    context 'when more than 0 parameters are provided' do
+      let(:command) { 'S 5 6 C' }
+      it 'fails' do
+        expect { subject }.to raise_error(/Incorrect/)
+      end
     end
   end
 
@@ -104,6 +162,13 @@ describe CommandParser do
     it 'set command to rotate' do
       expect(subject.command).to eq :rotate
     end
+
+    context 'when more than 0 parameters are provided' do
+      let(:command) { 'R 5 6 C' }
+      it 'fails' do
+        expect { subject }.to raise_error(/Incorrect/)
+      end
+    end
   end
 
   context 'when command is X' do
@@ -111,6 +176,13 @@ describe CommandParser do
 
     it 'set command to exit' do
       expect(subject.command).to eq :exit
+    end
+
+    context 'when more than 0 parameters are provided' do
+      let(:command) { 'X 5 6 C' }
+      it 'fails' do
+        expect { subject }.to raise_error(/Incorrect/)
+      end
     end
   end
 end
