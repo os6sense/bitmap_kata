@@ -3,11 +3,12 @@ require_relative '../lib/bitmap.rb'
 describe Bitmap do
   let(:height) { 4 }
   let(:width)  { 4 }
+  let(:dimensions) { double('Coord', x: height, y: width) }
   let(:default_colour) { double('Colour', value: '0') }
   let(:new_colour) { double('Colour', value: '1') }
 
   describe '#initialize' do
-    subject { described_class.new(height, width, default_colour) }
+    subject { described_class.new(dimensions, default_colour) }
     it 'returns an instance of the class' do
       expect(subject).to be_a described_class
     end
@@ -32,14 +33,14 @@ describe Bitmap do
 
   describe '#[]' do
     let(:coords) { double('Coords', x: 0, y: 0) }
-    subject { described_class.new(height, width, default_colour) }
+    subject { described_class.new(dimensions, default_colour) }
     it 'returns an element' do
       expect(subject[0, 0]).to eq default_colour
     end
   end
 
   describe '#[]=' do
-    subject { described_class.new(height, width, default_colour) }
+    subject { described_class.new(dimensions, default_colour) }
     before { subject[0, 0] = new_colour }
     it 'sets the element at the specified row and column to val' do
       expect(subject[0, 0]).to eq new_colour
@@ -47,7 +48,7 @@ describe Bitmap do
   end
 
   describe '#clear' do
-    subject { described_class.new(height, width, new_colour) }
+    subject { described_class.new(dimensions, new_colour) }
     it 'resets the value for all Colours' do
       allow(new_colour).to receive(:reset).exactly(height * width).times
       subject.clear
@@ -55,7 +56,7 @@ describe Bitmap do
   end
 
   describe '#drawline' do
-    subject { described_class.new(height, width) }
+    subject { described_class.new(dimensions) }
     before { subject.drawline(coord1, coord2, new_colour) }
 
     context 'when provided coordinates between two columns' do
@@ -119,7 +120,7 @@ describe Bitmap do
   end
 
   describe '#fill' do
-    subject { described_class.new(height, width, default_colour) }
+    subject { described_class.new(dimensions, default_colour) }
 
     let(:coord1) { double('Coord', x: 1, y: 1, valid?: true) }
     let(:a_colour) { double('Colour', value: 'A') }
@@ -143,7 +144,7 @@ describe Bitmap do
   end
 
   describe '#show' do
-    subject { described_class.new(height, width, default_colour) }
+    subject { described_class.new(dimensions, default_colour) }
 
     it 'prints out the bitmap' do
       expect { subject.show }.to output("0000\n" * 4).to_stdout
@@ -168,7 +169,7 @@ describe Bitmap do
   end
 
   describe '#rotate' do
-    subject { described_class.new(height, width, default_colour) }
+    subject { described_class.new(dimensions, default_colour) }
 
     before do
       subject[0, 0] = double('Colour', value: '1')

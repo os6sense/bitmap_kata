@@ -22,8 +22,9 @@ class Bitmap
     end
   end
 
-  def initialize(height, width, default_colour = Colour.new('0'))
-    @height, @width = height, width
+  #def initialize(height, width, default_colour = Colour.new('0'))
+  def initialize(dimensions, default_colour = Colour.new('0'))
+    @height, @width = dimensions.x, dimensions.y
 
     @bitmap = self.class.create(@height, @width, default_colour)
   end
@@ -40,8 +41,8 @@ class Bitmap
 
   # "Raw" row and column based writer for values
   def []=(row, col, value)
-    new_coord(row + 1, col + 1).tap do | coord |
-      set_at(coord, value)
+    new_coord(row + 1, col + 1).tap do |coord|
+      plot(coord, value)
     end
   end
 
@@ -51,7 +52,7 @@ class Bitmap
   end
 
   # Set an element of the bitmap to +value+ using a +Coordinate+
-  def set_at(coords, value)
+  def plot(coords, value)
     @bitmap[coords.x - 1][coords.y - 1] = value
   end
 
@@ -88,7 +89,7 @@ class Bitmap
     original_colour ||= at(coords)
     return if at(coords) != original_colour || at(coords) == new_colour
 
-    set_at(coords, new_colour)
+    plot(coords, new_colour)
 
     [[1, 0], [-1, 0], [0, 1], [0, -1]].each do |x1, y1|
       fill(new_coord(coords.x + x1, coords.y + y1), new_colour, original_colour)
