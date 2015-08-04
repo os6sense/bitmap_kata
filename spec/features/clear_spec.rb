@@ -8,7 +8,7 @@ feature 'user clears an image' do
     @bitmap.fill(Coord.new(1, 1), Colour.new('X'))
   end
 
-  scenario 'with a valid height and width' do
+  scenario 'when all pixels are coloured X' do
     expect { @bitmap.show }
       .to output("XXXXX\n" * 5).to_stdout
 

@@ -7,6 +7,6 @@ feature 'user creates new image' do
     cmd = CommandParser.parse(create)
     @bitmap = cmd.apply(Bitmap)
     expect { @bitmap.show }
-      .to output("#{'0' * 10}\n" * 20).to_stdout
+      .to output("#{'0' * 20}\n" * 10).to_stdout
   end
 end
