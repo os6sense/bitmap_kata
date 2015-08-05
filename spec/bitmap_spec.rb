@@ -3,6 +3,7 @@ require_relative '../lib/bitmap.rb'
 describe Bitmap do
   let(:height) { 4 }
   let(:width)  { 4 }
+
   let(:dimensions) { double('Coord', x: height, y: width) }
   let(:default_colour) { double('Colour', value: '0') }
   let(:new_colour) { double('Colour', value: '1') }
@@ -48,7 +49,11 @@ describe Bitmap do
 
   describe '#at' do
     subject { described_class.new(dimensions, default_colour) }
-    before { subject[0, 0] = new_colour }
+    before do
+      allow(coord).to receive(:xmax=)
+      allow(coord).to receive(:ymax=)
+      subject[0, 0] = new_colour
+    end
     let(:coord) { double('Coord', x: 1, y: 1, valid?: true) }
     it 'returns an element via coords' do
       expect(subject.at(coord)).to eq new_colour
@@ -58,7 +63,11 @@ describe Bitmap do
   describe '#plot' do
     subject { described_class.new(dimensions, default_colour) }
     let(:coord) { double('Coord', x: 1, y: 1, valid?: true) }
-    before { subject.plot(coord, new_colour) }
+    before do
+      allow(coord).to receive(:xmax=)
+      allow(coord).to receive(:ymax=)
+      subject.plot(coord, new_colour)
+    end
 
     it 'sets the element at the specified row and column to val' do
       expect(subject[0, 0]).to eq new_colour
@@ -84,12 +93,21 @@ describe Bitmap do
 
   describe '#drawline' do
     subject { described_class.new(dimensions) }
-    before { subject.drawline(coord1, coord2, new_colour) }
+    before do
+      allow(coord1).to receive(:xmax=)
+      allow(coord1).to receive(:ymax=)
+      allow(coord2).to receive(:xmax=)
+      allow(coord2).to receive(:ymax=)
+      subject.drawline(coord1, coord2, new_colour)
+    end
 
     context 'when provided coordinates between two columns' do
       context 'when the y coordinate is assending' do
         let(:coord1) { double('Coord', x: 2, y: 1, valid?: true) }
         let(:coord2) { double('Coord', x: 2, y: 4, valid?: true) }
+
+        before do
+        end
 
         it 'draws a horizontal segment between the coords' do
           (coord1.y).upto(coord2.y).each do |y|
@@ -161,6 +179,11 @@ describe Bitmap do
     let(:coord1) { double('Coord', x: 1, y: 1, valid?: true) }
     let(:a_colour) { double('Colour', value: 'A') }
     let(:b_colour) { double('Colour', value: 'B') }
+
+    before do
+      allow(coord1).to receive(:xmax=)
+      allow(coord1).to receive(:ymax=)
+    end
 
     it 'fills a bounded region' do
       subject[0, 1] = a_colour
