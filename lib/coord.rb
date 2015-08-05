@@ -7,11 +7,10 @@ class Coord
   attr_accessor :x,
                 :y
 
-  attr_reader :xmin,
-              :xmax
-
-  attr_reader :ymin,
-              :ymax
+  attr_accessor :xmin,
+                :xmax,
+                :ymin,
+                :ymax
 
   # Create a new coordinate pair; x an y are required but minimum and
   # maximum bounts can be set by using the named parameters xmin, xmax, ymin
