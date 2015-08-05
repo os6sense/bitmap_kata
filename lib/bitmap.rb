@@ -58,7 +58,6 @@ class Bitmap
   # Set an element of the bitmap to +value+ at +Coord+
   def plot(coord, value)
     check coord
-    #fail "Invalid Coordinate Coord:#{coord}" unless coord.valid?
     @bitmap[coord.x - 1][coord.y - 1] = value
     self
   end
@@ -140,7 +139,6 @@ class Bitmap
     coord.xmax, coord.ymax = @height, @width
     fail "Invalid Coordinate Coord:#{coord}" unless coord.valid?
   end
-
 
   def new_coord(x, y)
     Coord.new(x, y, xmax: height, ymax: width)
