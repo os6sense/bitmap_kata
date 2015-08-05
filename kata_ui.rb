@@ -8,8 +8,7 @@ loop do
   input = gets
   begin
     bitmap = CommandParser.parse(input).apply(bitmap)
-  rescue Exception => e
-    raise if e.class == SystemExit
+  rescue RuntimeError => e
     puts e.message
   end
 end
