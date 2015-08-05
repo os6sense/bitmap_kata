@@ -76,17 +76,17 @@ class Command
 
   def fail_if_incorrect_number_of_arguments(command, args)
     msg = "Incorrect number of arguments for command #{command}."
-    l = args.size
+    len = args.size
 
     case command
     when :clear, :show, :exit, :rotate
-      fail msg unless l == 1
+      fail msg unless len == 1
     when :new
-      fail msg unless l == 3
+      fail msg unless len == 3
     when :drawline
-      fail msg unless l == 5
+      fail msg unless len == 5
     when :fill, :plot
-      fail msg unless l == 4
+      fail msg unless len == 4
     end
   end
 
