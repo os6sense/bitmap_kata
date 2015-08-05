@@ -6,5 +6,10 @@ bitmap = Bitmap
 loop do
   print '> '
   input = gets
-  bitmap = CommandParser.parse(input).apply(bitmap)
+  begin
+    bitmap = CommandParser.parse(input).apply(bitmap)
+  rescue Exception => e
+    raise if e == exit
+    puts e.message
+  end
 end
