@@ -46,15 +46,39 @@ describe Bitmap do
     end
   end
 
-  #describe '#at' do
-    #it { pending }
-  #end
+  describe '#at' do
+    subject { described_class.new(dimensions, default_colour) }
+    before { subject[0, 0] = new_colour }
+    let(:coord) { double('Coord', x: 1, y: 1, valid?: true) }
+    it 'returns an element via coords' do
+      expect(subject.at(coord)).to eq new_colour
+    end
+  end
+
+  describe '#plot' do
+    subject { described_class.new(dimensions, default_colour) }
+    let(:coord) { double('Coord', x: 1, y: 1, valid?: true) }
+    before { subject.plot(coord, new_colour) }
+
+    it 'sets the element at the specified row and column to val' do
+      expect(subject[0, 0]).to eq new_colour
+    end
+
+    it 'returns self when called' do
+      expect(subject.plot(coord, new_colour)).to eq subject
+    end
+  end
 
   describe '#clear' do
     subject { described_class.new(dimensions, new_colour) }
     it 'resets the value for all Colours' do
       allow(new_colour).to receive(:reset).exactly(height * width).times
       subject.clear
+    end
+
+    it 'returns self when called' do
+      allow(new_colour).to receive(:reset).exactly(height * width).times
+      expect(subject.clear).to eq subject
     end
   end
 
@@ -122,6 +146,13 @@ describe Bitmap do
         end
       end
     end
+
+    let(:coord1) { double('Coord', x: 1, y: 1, valid?: true) }
+    let(:coord2) { double('Coord', x: 4, y: 4, valid?: true) }
+    it 'returns self when called' do
+      expect(subject.drawline(coord1, coord2, new_colour))
+        .to eq subject
+    end
   end
 
   describe '#fill' do
@@ -145,6 +176,10 @@ describe Bitmap do
       subject.fill(coord1, new_colour)
       expect { subject.show }
         .to output("1111\n" * 4).to_stdout
+    end
+
+    it 'returns self' do
+      expect( subject.fill(coord1, new_colour)).to eq subject
     end
   end
 
@@ -171,6 +206,10 @@ describe Bitmap do
         subject.show(presenter: presenter)
       end
     end
+
+    it 'returns self' do
+      expect(subject.show).to eq subject
+    end
   end
 
   describe '#rotate' do
@@ -187,6 +226,10 @@ describe Bitmap do
       subject.rotate
       expect { subject.show }
         .to output("3001\n0000\n0000\n4002\n").to_stdout
+    end
+
+    it 'returns self' do
+      expect(subject.rotate).to eq subject
     end
   end
 end
