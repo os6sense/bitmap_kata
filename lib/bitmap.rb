@@ -36,6 +36,7 @@ class Bitmap
   # Resets the value of each element/pixel of the bitmap to Colour::DEFAULT
   def clear
     @bitmap.each { |row| row.each(&:reset) }
+    self
   end
 
   # row and column based reader for values e.g. [x, y]
@@ -60,6 +61,7 @@ class Bitmap
   def plot(coord, value)
     fail "Invalid Coordinate Coord:#{coord}" unless coord.valid?
     @bitmap[coord.x - 1][coord.y - 1] = value
+    self
   end
 
   # Draw a line between two coordinate pairs using the supplied +colour+
@@ -87,6 +89,7 @@ class Bitmap
       x += x_increment
       y += y_increment
     end
+    self
   end
 
   # Fill a region R with a new colour. R is defined as:
@@ -112,11 +115,13 @@ class Bitmap
     [[1, 0], [-1, 0], [0, 1], [0, -1]].each do |x1, y1|
       fill(new_coord(coord.x + x1, coord.y + y1), new_colour, original_colour)
     end
+    self
   end
 
   # Rotate the bitmap 90 degrees clockwisej
   def rotate
     @bitmap = @bitmap.transpose.map(&:reverse)
+    self
   end
 
   # Show the bitmap. By default the bitmap will be printed to STDOUT
@@ -126,6 +131,7 @@ class Bitmap
   # +presenter:+:: named parameter. default ( BitmapPresenter instance )
   def show(out: $stdout, presenter: BitmapPresenter.new)
     presenter.show(@bitmap, out: out)
+    self
   end
 
   private

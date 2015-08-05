@@ -1,6 +1,14 @@
+INSTALLATION
 
+clone this repository and run bundle install.
 
-== FEATURE
+RUNNING
+
+A UI is now present - how embaressing. Run 'ruby kata_ui.rb'
+
+Tests can be run via 'rake' or 'rspec'
+
+FEATURE
 
 A new feature has been added which provides the ability to rotate the bitmap
 by 90 degrees clockwise.
