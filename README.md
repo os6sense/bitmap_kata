@@ -4,7 +4,7 @@ clone this repository and run bundle install.
 
 RUNNING
 
-A UI is now present - how embaressing. Run 'ruby kata_ui.rb'
+A UI is now present - how embarrassing!. Run 'ruby kata_ui.rb'
 
 Tests can be run via 'rake' or 'rspec'
 
