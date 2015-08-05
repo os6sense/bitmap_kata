@@ -46,20 +46,19 @@ class Bitmap
 
   # row and column based writer for values e.g. [x, y] = Colour.new('X')
   def []=(row, col, value)
-    new_coord(row + 1, col + 1).tap do |coord|
-      plot(coord, value)
-    end
+    new_coord(row + 1, col + 1).tap { |coord| plot(coord, value) }
   end
 
   # Access an element of the bitmap using a +Coord+
   def at(coord)
-    fail "Invalid Coordinate Coord:#{coord}" unless coord.valid?
+    check coord
     @bitmap[coord.x - 1][coord.y - 1]
   end
 
   # Set an element of the bitmap to +value+ at +Coord+
   def plot(coord, value)
-    fail "Invalid Coordinate Coord:#{coord}" unless coord.valid?
+    check coord
+    #fail "Invalid Coordinate Coord:#{coord}" unless coord.valid?
     @bitmap[coord.x - 1][coord.y - 1] = value
     self
   end
@@ -71,8 +70,8 @@ class Bitmap
   # +coord2+:: finishing coordinate
   # +colour+:: Colour to fill the line colour with
   def drawline(coord1, coord2, colour)
-    fail "Invalid Coordinate Coord 1:#{coord}" unless coord1.valid?
-    fail "Invalid Coordinate Coord 2:#{coord2}" unless coord2.valid?
+    check coord1
+    check coord2
 
     x_increment = (coord2.x - coord1.x) <=> 0
     y_increment = (coord2.y - coord1.y) <=> 0
@@ -104,7 +103,8 @@ class Bitmap
   # +coord+:: x,y coordinates of the region to fill
   # +new_colour+:: The colour to fill with
   def fill(coord, new_colour, original_colour = nil)
-    fail "Invalid Coordinate :#{coord}" if !coord.valid? && original_colour.nil?
+    check coord if original_colour.nil?
+
     return unless coord.valid?
 
     original_colour ||= at(coord)
@@ -135,6 +135,12 @@ class Bitmap
   end
 
   private
+
+  def check(coord)
+    coord.xmax, coord.ymax = @height, @width
+    fail "Invalid Coordinate Coord:#{coord}" unless coord.valid?
+  end
+
 
   def new_coord(x, y)
     Coord.new(x, y, xmax: height, ymax: width)
