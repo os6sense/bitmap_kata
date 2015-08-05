@@ -9,7 +9,7 @@ loop do
   begin
     bitmap = CommandParser.parse(input).apply(bitmap)
   rescue Exception => e
-    raise if e == exit
+    raise if e.class == SystemExit
     puts e.message
   end
 end
