@@ -104,7 +104,7 @@ class Command
   end
 
   def new_coord(x, y)
-    Coord.new(x.to_i, y.to_i)
+    Coord.new(Integer(x), Integer(y))
   end
 
   def get_coord(args)
