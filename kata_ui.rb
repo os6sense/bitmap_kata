@@ -8,7 +8,7 @@ help_msg = "Please first create a new bitmap with the I command\n"
 bitmap = Bitmap
 puts help_msg
 
-while input = Readline.readline('> ', true)
+while (input = Readline.readline('> ', true))
   begin
     bitmap = CommandParser.parse(input).apply(bitmap) if input != ''
   rescue RuntimeError => e
@@ -16,6 +16,10 @@ while input = Readline.readline('> ', true)
   rescue ArgumentError => e
     puts e.message
   rescue NoMethodError
-    puts help_msg
+    if bitmap == Bitmap
+      puts help_msg
+    else
+      puts 'Please use X to exit to create a new bitmap or C to clear'
+    end
   end
 end
